@@ -30,9 +30,7 @@ public class GuideInteraction : MonoBehaviour
             {
                 promptObject.SetActive(true);
 
-                if (Input.GetKeyDown(KeyCode.E) ||
-                    Input.GetMouseButtonDown(0) ||
-                    Input.GetKeyDown(KeyCode.JoystickButton10))
+                if (Input.GetButtonDown("js0"))
                 {
                     OpenDialogue();
                 }
@@ -44,8 +42,7 @@ public class GuideInteraction : MonoBehaviour
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.Escape) ||
-                Input.GetKeyDown(KeyCode.JoystickButton2))
+            if (Input.GetButtonDown("js2"))
             {
                 CloseDialogue();
             }
