@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/assignment01.unity
+    guid: bdb2e4b604d264de09d0bab62fded4bc
+  - enabled: 1
+    path: Assets/Scenes/timecapsule_room.unity
+    guid: 29c8e5aee97734ab6b482e6fde2ef780
+  - enabled: 0
+    path: Assets/MiLabCardboardExtension/Scenes/Map Bluetooth Key.unity
+    guid: 1eb807ac90408844da5fd17e087fea1e
+  - enabled: 1
+    path: Assets/Scenes/olympic.unity
+    guid: d53ec3289143d4990abf0992466989ee
+  - enabled: 1
+    path: Assets/Scenes/soccer.unity
+    guid: 16bd202f4d3004bbdbfb9424d9b66b9f
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 8ae4b99d58009470ba09d8de89baaf0d, type: 2}
+  m_UseUCBPForAssetBundles: 0
