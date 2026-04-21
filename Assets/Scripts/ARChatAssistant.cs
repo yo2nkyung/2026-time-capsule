@@ -149,9 +149,9 @@ public class ARChatAssistant : MonoBehaviour
             case "ARScene":
                 return "Main AR scene where the user selects portals and interacts with the time capsule.";
             case "soccer":
-                return "Soccer minigame or soccer-themed time capsule scene.";
+                return "World Cup themed minigame or soccer-related time capsule scene.";
             case "olympic":
-                return "Olympic-themed minigame or activity scene.";
+                return "2026 Olympics themed minigame or activity scene.";
             case "timecapsule_room":
                 return "Room scene for viewing or interacting with time capsule content.";
             case "EndScene":
