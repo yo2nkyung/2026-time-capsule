@@ -149,13 +149,15 @@ public class ARChatAssistant : MonoBehaviour
             case "ARScene":
                 return "Main AR scene where the user selects portals and interacts with the time capsule.";
             case "soccer":
-                return "Soccer-related scene in the time capsule experience.";
+                return "Soccer minigame or soccer-themed time capsule scene.";
+            case "olympic":
+                return "Olympic-themed minigame or activity scene.";
             case "timecapsule_room":
-                return "A room scene for viewing time capsule content.";
+                return "Room scene for viewing or interacting with time capsule content.";
             case "EndScene":
                 return "The ending scene of the experience.";
             default:
-                return "This is a Unity AR scene in the project.";
+                return "This is a Unity AR scene in the time capsule project.";
         }
     }
 
