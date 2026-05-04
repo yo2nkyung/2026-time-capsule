@@ -75,7 +75,9 @@ public class BallInputHandler : MonoBehaviour
     private void TryBeginGrab(int fingerId, Vector2 screenPos)
     {
         Ray ray = _arCamera.ScreenPointToRay(screenPos);
-        if (!Physics.Raycast(ray, out RaycastHit hit))
+        // QueryTriggerInteraction.Ignore ensures trigger volumes (e.g. GoalTrigger)
+        // never block the raycast from reaching the ball's solid collider.
+        if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, Physics.AllLayers, QueryTriggerInteraction.Ignore))
             return;
 
         BallThrowable ball = hit.collider.GetComponent<BallThrowable>();

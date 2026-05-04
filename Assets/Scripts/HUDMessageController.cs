@@ -14,7 +14,7 @@ public class HUDMessageController : MonoBehaviour
     public GameObject hudPanel;
 
     private Coroutine _hideCoroutine;
-    private const string WelcomeMessage = "Welcome, place the hub on the brightest blue mapping";
+    private const string WelcomeMessage = "Welcome, place the hub on the QR code";
 
     private void Awake()
     {

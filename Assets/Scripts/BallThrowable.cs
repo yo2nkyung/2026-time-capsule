@@ -32,6 +32,8 @@ public class BallThrowable : MonoBehaviour
 
     public bool IsHeld => _isHeld;
 
+    private const float PickUpMessageDuration = 2f;
+
     private bool _isHeld = false;
     private Rigidbody _rb;
     private Camera _arCamera;
@@ -90,6 +92,8 @@ public class BallThrowable : MonoBehaviour
             ? _arCamera.transform.forward * minThrowForce
             : Vector3.forward * minThrowForce;
         _lineRenderer.enabled = true;
+
+        HUDMessageController.Instance?.ShowMessage($"{gameObject.name} has been picked up", PickUpMessageDuration);
     }
 
     // update the live arc while the user drags
