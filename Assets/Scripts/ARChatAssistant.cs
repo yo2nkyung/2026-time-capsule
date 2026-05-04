@@ -13,11 +13,12 @@ public class ARChatAssistant : MonoBehaviour
     public TMP_InputField inputField;
     public TMP_Text responseText;
     public Button sendButton;
+    public GameObject chatPanel;
 
     [Header("OpenAI")]
     [TextArea(2, 4)]
     public string apiKey = "";
-    public string modelName = "gpt-5.4-nano";
+    public string modelName = "gpt-5.4-mini";
     public bool useFakeResponse = true;
 
     [Header("Assistant Instructions")]
@@ -38,6 +39,14 @@ public class ARChatAssistant : MonoBehaviour
 
         if (responseText != null)
             responseText.text = "Hi! Ask me something about this scene.";
+    }
+
+    public void ToggleChatPanel()
+    {
+        if (chatPanel == null)
+            return;
+
+        chatPanel.SetActive(!chatPanel.activeSelf);
     }
 
     public void OnSendClicked()
