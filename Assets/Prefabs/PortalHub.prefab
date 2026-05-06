@@ -7192,7 +7192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68c3ed9f16531402788d3fca30b1d354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PortalEntrance
-  targetScene: soccer
+  targetScene: olympic
 --- !u!1001 &3723300265261787872
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8045,7 +8045,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68c3ed9f16531402788d3fca30b1d354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PortalEntrance
-  targetScene: soccer
+  targetScene: superbowl
 --- !u!4 &8140779991475371319 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2371748423089978494, guid: 12d830280617f44a9b17751bc4f259ed, type: 3}
@@ -8536,7 +8536,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2b3788a0f64f23449a9c118bcd1db04d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.5146127
+      value: -4.58
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2b3788a0f64f23449a9c118bcd1db04d, type: 3}
       propertyPath: m_LocalPosition.y

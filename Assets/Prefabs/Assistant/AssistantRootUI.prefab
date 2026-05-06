@@ -1079,9 +1079,9 @@ MonoBehaviour:
   responseText: {fileID: 4105966728007085324}
   sendButton: {fileID: 3445229426896361674}
   chatPanel: {fileID: 5176947468683191543}
-  apiKey: 
+  apiKey: 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
   modelName: gpt-5.4-mini
-  useFakeResponse: 1
+  useFakeResponse: 0
   assistantInstructions: You are a friendly conversational guide inside an AR project
     called Time Capsule. Help the user understand what they are seeing, what they
     can do in the current scene, and what to do next. Respond in plain text only.

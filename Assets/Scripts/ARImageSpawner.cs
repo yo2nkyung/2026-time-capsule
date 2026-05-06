@@ -28,6 +28,30 @@ public class ARImageSpawner : MonoBehaviour
         if (imageManager == null)
             Debug.LogError("[ARImageSpawner] No ARTrackedImageManager found on this GameObject. Add it to XR Origin.");
     }
+    // ============================
+    private void Start()
+    {
+        // 이전에 허브 놓은 적 있으면 바로 스폰
+        if (PlayerPrefs.GetInt("HubPlaced", 0) == 1)
+        {
+            Vector3 savedPos = new Vector3(
+                PlayerPrefs.GetFloat("HubX"),
+                PlayerPrefs.GetFloat("HubY"),
+                PlayerPrefs.GetFloat("HubZ")
+            );
+            Quaternion savedRot = new Quaternion(
+                PlayerPrefs.GetFloat("HubRotX"),
+                PlayerPrefs.GetFloat("HubRotY"),
+                PlayerPrefs.GetFloat("HubRotZ"),
+                PlayerPrefs.GetFloat("HubRotW")
+            );
+            spawnedInstance = Instantiate(placementPrefab, savedPos, savedRot);
+            HUDMessageController.Instance?.ShowMessage(PlacedPrompt);
+            imageManager.enabled = false;
+            resetButton?.SetActive(true);
+        }
+    }
+    // ============================
 
     private void OnEnable()
     {
@@ -72,6 +96,20 @@ public class ARImageSpawner : MonoBehaviour
         Quaternion spawnRotation = trackedImage.transform.rotation * Quaternion.Euler(rotationOffset);
         spawnedInstance = Instantiate(placementPrefab, trackedImage.transform.position, spawnRotation);
 
+        // ============================
+        // Save Location
+        PlayerPrefs.SetFloat("HubX", trackedImage.transform.position.x);
+        PlayerPrefs.SetFloat("HubY", trackedImage.transform.position.y);
+        PlayerPrefs.SetFloat("HubZ", trackedImage.transform.position.z);
+        PlayerPrefs.SetFloat("HubRotX", spawnRotation.x);
+        PlayerPrefs.SetFloat("HubRotY", spawnRotation.y);
+        PlayerPrefs.SetFloat("HubRotZ", spawnRotation.z);
+        PlayerPrefs.SetFloat("HubRotW", spawnRotation.w);
+        PlayerPrefs.SetInt("HubPlaced", 1);
+        PlayerPrefs.Save();
+        // ============================
+
+
         HUDMessageController.Instance?.ShowMessage(PlacedPrompt);
 
         // Disable tracking — no longer needed after placement.
@@ -80,6 +118,10 @@ public class ARImageSpawner : MonoBehaviour
         resetButton?.SetActive(true);
         return true;
     }
+
+
+
+
     public void Reset()
     {
         if (spawnedInstance != null)
@@ -87,6 +129,12 @@ public class ARImageSpawner : MonoBehaviour
             Destroy(spawnedInstance);
             spawnedInstance = null;
         }
+
+        // ============================
+        // reset saved Location
+        PlayerPrefs.DeleteKey("HubPlaced");
+        PlayerPrefs.Save();
+        // ============================
 
         resetButton?.SetActive(false);
         imageManager.enabled = true;
