@@ -490,10 +490,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1090333911}
     m_Modifications:
-    - target: {fileID: 1473360941842523938, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_Color.a
-      value: 0.23529412
-      objectReference: {fileID: 0}
     - target: {fileID: 2469242492528627342, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1020.3484
@@ -543,63 +539,146 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4965140025066278948, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 1304874730}
+    - target: {fileID: 4965140025066278948, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
       propertyPath: useFakeResponse
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4965140025066278948, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
+      propertyPath: assistantInstructions
+      value: You are a friendly conversational guide inside an AR project called
+        Time Capsule. Act like an in-world host who helps the user understand the
+        current scene, what the goal is, and what to do next. Always give clear minigame
+        instructions when the user is in a playable scene. Mention the event name
+        when relevant, like the 2026 Olympics, 2026 World Cup, or 2026 Super Bowl.
+        If the user is in the AR entry scene or the Time Capsule hub, explain their
+        available paths clearly, including choosing a portal or adding collected
+        memorabilia to the 2026 shelf. Respond in plain text only. Keep replies short
+        and natural. Most replies should be 1 to 3 short sentences. Do not use markdown,
+        bullet points, or asterisks. Be scene-aware, specific, encouraging, and easy
+        to follow.
       objectReference: {fileID: 0}
     - target: {fileID: 5176947468683191543, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8480470699346219885, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8480470699346219885, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8480470699346219885, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8480470699346219885, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 140.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8480470699346219885, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 976.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8702471206089420579, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8702471206089420579, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8702471206089420579, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8702471206089420579, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 471.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 8702471206089420579, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 876.2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8169119106478898056, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1304874730}
   m_SourcePrefab: {fileID: 100100000, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
 --- !u!4 &1304874728 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2469242492528627342, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
   m_PrefabInstance: {fileID: 1304874727}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1304874729 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8169119106478898056, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
+  m_PrefabInstance: {fileID: 1304874727}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &1304874730
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1304874729}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1325236177
 GameObject:
   m_ObjectHideFlags: 0
