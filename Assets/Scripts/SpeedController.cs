@@ -1,13 +1,14 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SpeedController : MonoBehaviour
 {
     public float minSpeed = 2f;
     public float maxSpeed = 15f;
     public float speedStep = 3f;
-    public Text speedText; // UI Text to display current speed
+    public TMP_Text speedText; // UI Text to display current speed
 
     private TrackMover[] trackMovers;
     

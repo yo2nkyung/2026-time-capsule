@@ -23,14 +23,27 @@ public class GameManager : MonoBehaviour
 
     public TMP_Text countdownText;
     public TMP_Text resultText;
+    public TMP_Text timerText;
 
     public float gameDuration = 30f;
 
     private float timer;
 
+    public Transform trackRoot;
+    private Vector3 originalTrackPosition;
+
     void Awake()
     {
         Instance = this;
+        originalTrackPosition = trackRoot.position;
+
+        CurrentState = GameState.StartScreen;
+
+        startPanel.SetActive(true);
+        gamePanel.SetActive(false);
+        finishPanel.SetActive(false);
+
+        countdownText.gameObject.SetActive(false);
     }
 
     void Start()
@@ -74,6 +87,7 @@ public class GameManager : MonoBehaviour
         countdownText.gameObject.SetActive(false);
 
         timer = gameDuration;
+        timerText.text = "Time: " + gameDuration.ToString();
         CurrentState = GameState.Playing;
     }
 
@@ -83,25 +97,32 @@ public class GameManager : MonoBehaviour
             return;
 
         timer -= Time.deltaTime;
+        timerText.text = "Time: " + Mathf.Ceil(timer).ToString();
 
         if (timer <= 0)
         {
-            FinishGame();
+            FinishGame(false);
         }
     }
 
-    public void FinishGame()
+    public void FinishGame(bool success)
     {
         CurrentState = GameState.Finished;
 
-        gamePanel.SetActive(false);
-        finishPanel.SetActive(true);
+    gamePanel.SetActive(false);
+    finishPanel.SetActive(true);
 
-        resultText.text = "FINISH!\nYou completed the run!";
+    if (success)
+        resultText.text = "SUCCESS!\nYou reached the finish line!";
+    else
+        resultText.text = "FAILED!\nTime is up!";
     }
 
     public void RestartGame()
     {
+        trackRoot.position = originalTrackPosition;
+
+    
         StartGame();
     }
 }

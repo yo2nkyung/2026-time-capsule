@@ -1,184 +1,104 @@
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using System.Collections;
-
-
+using UnityEngine;
 
 public class GoalkeeperMode : MonoBehaviour
 {
-    [Header("Settings")]
-    public GameObject[] soccerBalls;     // Soccer balls
-    public float ballSpeed = 5f;         // ball speed
-    public float blockRange = 1.5f;      // block range
-    public float spawnInterval = 3f;     // ball spawn interval
+    [Header("XR")]
+    public Transform xrOrigin;
+    public Transform goalkeeperSpawnPoint;
 
+    [Header("Ball")]
+    public GameObject ballPrefab;
 
-    [Header("Goal Target")]
-    public Transform goalCenter;
+    public Transform[] ballSpawnPoints;
 
+    public Transform[] targetPoints;
 
-    [Header("UI")]
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI resultText;   // "SAVED!" / "GOAL!"
-    
-    
-    
-    [Header("Audio")]
-    public AudioSource audioSource;
-    public AudioClip saveSound;
-    public AudioClip goalSound;
+    public float shootInterval = 4f;
 
+    private bool isPlaying = false;
+    private Coroutine shootRoutine;
 
-    private int savedCount = 0;
-    private int goalCount = 0;
-    private bool ballInFlight = false;
-    private GameObject currentBall;
-    private Vector3[] ballStartPositions;
+    public int maxShots = 5;
+    public int saveCount = 0;
+
+    public TMPro.TMP_Text saveCountText;
+    public TMPro.TMP_Text messageText;
+    public GameObject goalkeeperHUD;
+
+private int shotsTaken = 0;
 
 
     void OnEnable()
     {
-        // resetting everthing
-        savedCount = 0;
-        goalCount = 0;
-        UpdateScoreUI();
-        resultText.text = "";
-        ballInFlight = false;
-
-        // initial location of ball
-        ballStartPositions = new Vector3[soccerBalls.Length];
-        for (int i = 0; i < soccerBalls.Length; i++)
-            {
-                ballStartPositions[i] = soccerBalls[i].transform.position;
-            }
-        StartCoroutine(LaunchRoutine());
-
-
+        StartGoalkeeperMode();
     }
 
     void OnDisable()
     {
-        StopAllCoroutines();
-        ResetAllBalls();
+        isPlaying = false;
+        if (shootRoutine != null) StopCoroutine(shootRoutine);
+        if (goalkeeperHUD != null) goalkeeperHUD.SetActive(false);
     }
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void StartGoalkeeperMode()
     {
-        
+        xrOrigin.position = goalkeeperSpawnPoint.position;
+        xrOrigin.rotation = goalkeeperSpawnPoint.rotation;
+
+        saveCount = 0;
+        shotsTaken = 0;
+        goalkeeperHUD.SetActive(true);
+        UpdateSaveText();
+        messageText.text = "";
+
+        isPlaying = true;
+        shootRoutine = StartCoroutine(ShootBallsRoutine());
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator ShootBallsRoutine()
     {
-        if (!ballInFlight || currentBall == null) return;
+        while (isPlaying && shotsTaken < maxShots)
+        {   
+            shotsTaken++;
+            Transform spawn = ballSpawnPoints[Random.Range(0, ballSpawnPoints.Length)];
+            Transform target = targetPoints[Random.Range(0, targetPoints.Length)];
+            GameObject ball = Instantiate(ballPrefab, spawn.position, Quaternion.identity);
 
-        // move ball to goalkeeper direction
-        currentBall.transform.position = Vector3.MoveTowards(
-            currentBall.transform.position,
-            Camera.main.transform.position,
-            ballSpeed * Time.deltaTime);
+            BallBlockDetector detector = ball.GetComponent<BallBlockDetector>();
+            detector.goalkeeperMode = this;
 
-        float dist = Vector3.Distance(
-            currentBall.transform.position,
-            Camera.main.transform.position
-        );
+            Rigidbody rb = ball.GetComponent<Rigidbody>();
 
-        if (dist < blockRange)
-        {
-            Vector3 dirToBall = (currentBall.transform.position - Camera.main.transform.position).normalized;
-            float angle = Vector3.Angle(Camera.main.transform.forward, dirToBall);
+            Vector3 direction = (target.position - spawn.position).normalized;
+            float speed = 16f;
 
-            if (angle < 60f) OnSave();
-            else OnGoal();
+            rb.linearVelocity = direction * speed;
+            rb.angularVelocity = Vector3.zero;  
+
+            Destroy(ball, 8f);
+
+            yield return new WaitForSeconds(shootInterval);
         }
-
+        isPlaying = false;
+        messageText.text = "Done! Saves: " + saveCount + " / " + maxShots;
     }
 
-    IEnumerator LaunchRoutine()
+    public void RegisterSave()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(spawnInterval);
-            if (!ballInFlight) LaunchRandomBall();
-        }
+        saveCount++;
+        UpdateSaveText();
+
+        messageText.text = "SAVE!";
     }
 
-    void LaunchRandomBall()
+    public void RegisterMiss()
     {
-        int idx = Random.Range(0, soccerBalls.Length);
-        currentBall = soccerBalls[idx];
-
-        currentBall.transform.position = goalCenter.position + new Vector3(Random.Range(-1f, 1f), Random.Range(0f, 1f), 0);
-
-        Rigidbody rb = currentBall.GetComponent<Rigidbody>();
-        rb.linearVelocity = Vector3.zero;
-        rb.isKinematic = true; // move with 'movetowards' in Update()
-
-        ballInFlight = true;
-        Debug.Log($"[GoalkeeperMode] Launched: {currentBall.name}");
-
+        messageText.text = "MISS!";
     }
 
-    void OnSave()
+    void UpdateSaveText()
     {
-
-        savedCount++;
-        UpdateScoreUI();
-        resultText.text = "SAVED!";
-        if (saveSound != null) audioSource.PlayOneShot(saveSound);
-        ballInFlight = false;
+        saveCountText.text = "Saves: " + saveCount + " / " + maxShots;
     }
-
-    void OnGoal()
-    {
-        goalCount++;
-        UpdateScoreUI();
-        resultText.text = "GOAL!";
-        if (goalSound != null) audioSource.PlayOneShot(goalSound);
-        ballInFlight = false;
-
-        ResetBall(currentBall);
-        currentBall = null;
-    }
-
-    void ShowResult(string msg, bool saved)
-    {
-        resultText.text = msg;
-        StartCoroutine(ClearResult());
-    }
-
-    IEnumerator ClearResult()
-    {
-        yield return new WaitForSeconds(1.5f);
-        resultText.text = "";
-    }
-
-    void UpdateScoreUI()
-    {
-        scoreText.text = $"SAVED: {savedCount}  |  GOALS: {goalCount}";
-    }
-
-    void ResetBall(GameObject ball)
-    {
-        for (int i = 0; i < soccerBalls.Length; i++)
-        {
-            if (soccerBalls[i] == ball)
-            {
-                ball.transform.position = ballStartPositions[i];
-                break;
-            }
-        }
-    }
-
-    void ResetAllBalls()
-    {
-        for (int i = 0; i < soccerBalls.Length; i++)
-        {
-            soccerBalls[i].transform.position = ballStartPositions[i];
-        }
-    }
-
 }
