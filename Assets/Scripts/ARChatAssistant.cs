@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.IO;
 using System.Text;
@@ -13,6 +14,7 @@ public class ARChatAssistant : MonoBehaviour
     public TMP_InputField inputField;
     public TextMeshProUGUI responseText;
     public Button sendButton;
+    public Button voiceButton;
     public GameObject chatPanel;
 
     [Header("OpenAI")]
@@ -20,11 +22,16 @@ public class ARChatAssistant : MonoBehaviour
     public string modelName = "gpt-5.4-mini";
     public bool useFakeResponse = true;
 
-    [Header("Voice")]
+    [Header("Voice Output")]
     public bool useTextToSpeech = true;
     public string ttsModel = "gpt-4o-mini-tts";
     public string ttsVoice = "coral";
     public AudioSource audioSource;
+
+    [Header("Voice Input")]
+    public bool useVoiceInput = true;
+    public string transcriptionModel = "gpt-4o-mini-transcribe";
+    public int maxRecordingSeconds = 6;
 
     [TextArea(4, 8)]
     public string assistantInstructions =
@@ -40,12 +47,24 @@ public class ARChatAssistant : MonoBehaviour
 
     private const string ResponsesApiUrl = "https://api.openai.com/v1/responses";
     private const string TtsApiUrl = "https://api.openai.com/v1/audio/speech";
+    private const string TranscriptionApiUrl = "https://api.openai.com/v1/audio/transcriptions";
+
+    private AudioClip recordedClip;
+    private bool isRecording = false;
+    private string micDevice = null;
 
     private void Start()
     {
         if (sendButton != null)
         {
             sendButton.onClick.AddListener(OnSendClicked);
+        }
+
+        if (voiceButton != null)
+        {
+            voiceButton.onClick.AddListener(OnVoiceClicked);
+            voiceButton.gameObject.SetActive(false);
+            SetVoiceButtonLabel("Talk");
         }
 
         if (chatPanel != null)
@@ -62,6 +81,11 @@ public class ARChatAssistant : MonoBehaviour
         {
             audioSource = GetComponent<AudioSource>();
         }
+
+        if (Microphone.devices.Length > 0)
+        {
+            micDevice = Microphone.devices[0];
+        }
     }
 
     public void ToggleChatPanel()
@@ -70,6 +94,15 @@ public class ARChatAssistant : MonoBehaviour
 
         bool newState = !chatPanel.activeSelf;
         chatPanel.SetActive(newState);
+
+        if (voiceButton != null)
+        {
+            voiceButton.gameObject.SetActive(newState);
+            if (!newState)
+            {
+                SetVoiceButtonLabel("Talk");
+            }
+        }
 
         if (newState && responseText != null && string.IsNullOrWhiteSpace(responseText.text))
         {
@@ -84,6 +117,57 @@ public class ARChatAssistant : MonoBehaviour
         string userMessage = inputField.text.Trim();
         if (string.IsNullOrEmpty(userMessage)) return;
 
+        StartCoroutine(HandleUserMessage(userMessage));
+
+        inputField.text = "";
+        inputField.ActivateInputField();
+    }
+
+    public void OnVoiceClicked()
+    {
+        if (!useVoiceInput)
+        {
+            if (responseText != null)
+                responseText.text = "Voice input is turned off.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(micDevice))
+        {
+            if (responseText != null)
+                responseText.text = "No microphone found.";
+            return;
+        }
+
+        if (!isRecording)
+        {
+            recordedClip = Microphone.Start(micDevice, false, maxRecordingSeconds, 16000);
+            isRecording = true;
+            SetVoiceButtonLabel("Stop");
+
+            if (responseText != null)
+                responseText.text = "Listening... press Stop to finish.";
+        }
+        else
+        {
+            int samplePosition = Microphone.GetPosition(micDevice);
+            Microphone.End(micDevice);
+            isRecording = false;
+            SetVoiceButtonLabel("Talk");
+
+            if (samplePosition <= 0)
+            {
+                if (responseText != null)
+                    responseText.text = "I didn't hear anything. Try again.";
+                return;
+            }
+
+            StartCoroutine(TranscribeRecordedAudio(samplePosition));
+        }
+    }
+
+    private IEnumerator HandleUserMessage(string userMessage)
+    {
         if (responseText != null)
         {
             responseText.text = "Thinking...";
@@ -92,14 +176,10 @@ public class ARChatAssistant : MonoBehaviour
         if (useFakeResponse)
         {
             HandleFakeResponse(userMessage);
-        }
-        else
-        {
-            StartCoroutine(SendToOpenAI(userMessage));
+            yield break;
         }
 
-        inputField.text = "";
-        inputField.ActivateInputField();
+        yield return StartCoroutine(SendToOpenAI(userMessage));
     }
 
     private void HandleFakeResponse(string userMessage)
@@ -176,6 +256,69 @@ public class ARChatAssistant : MonoBehaviour
         }
     }
 
+    private IEnumerator TranscribeRecordedAudio(int samplePosition)
+    {
+        if (recordedClip == null)
+        {
+            if (responseText != null)
+                responseText.text = "Recording failed.";
+            yield break;
+        }
+
+        if (responseText != null)
+        {
+            responseText.text = "Transcribing...";
+        }
+
+        byte[] wavData = SavWav.FromAudioClip(recordedClip, samplePosition);
+        if (wavData == null || wavData.Length == 0)
+        {
+            if (responseText != null)
+                responseText.text = "Could not process microphone audio.";
+            yield break;
+        }
+
+        WWWForm form = new WWWForm();
+        form.AddField("model", transcriptionModel);
+        form.AddBinaryData("file", wavData, "voice.wav", "audio/wav");
+
+        using (UnityWebRequest request = UnityWebRequest.Post(TranscriptionApiUrl, form))
+        {
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Authorization", "Bearer " + apiKey);
+
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                if (responseText != null)
+                {
+                    responseText.text = "Transcription error: " + request.error + "\n" + request.downloadHandler.text;
+                }
+                yield break;
+            }
+
+            string transcriptJson = request.downloadHandler.text;
+            TranscriptionResponse transcriptResponse = JsonUtility.FromJson<TranscriptionResponse>(transcriptJson);
+
+            if (transcriptResponse == null || string.IsNullOrWhiteSpace(transcriptResponse.text))
+            {
+                if (responseText != null)
+                {
+                    responseText.text = "I couldn't understand that. Try again.";
+                }
+                yield break;
+            }
+
+            if (inputField != null)
+            {
+                inputField.text = "";
+            }
+
+            yield return StartCoroutine(HandleUserMessage(transcriptResponse.text));
+        }
+    }
+
     private string BuildPrompt(string userMessage, string sceneName, string sceneDescription)
     {
         return
@@ -212,6 +355,24 @@ public class ARChatAssistant : MonoBehaviour
 
             default:
                 return "This is a scene in the Time Capsule AR project. The assistant should help the user understand what they are seeing, what they can do here, and what the next step is.";
+        }
+    }
+
+    private void SetVoiceButtonLabel(string newLabel)
+    {
+        if (voiceButton == null) return;
+
+        TextMeshProUGUI tmp = voiceButton.GetComponentInChildren<TextMeshProUGUI>();
+        if (tmp != null)
+        {
+            tmp.text = newLabel;
+            return;
+        }
+
+        Text legacyText = voiceButton.GetComponentInChildren<Text>();
+        if (legacyText != null)
+        {
+            legacyText.text = newLabel;
         }
     }
 
@@ -322,6 +483,12 @@ public class ARChatAssistant : MonoBehaviour
     }
 
     [System.Serializable]
+    private class TranscriptionResponse
+    {
+        public string text;
+    }
+
+    [System.Serializable]
     private class ResponseWrapper
     {
         public ResponseItem[] output;
@@ -337,5 +504,58 @@ public class ARChatAssistant : MonoBehaviour
     private class ResponseContent
     {
         public string text;
+    }
+}
+
+public static class SavWav
+{
+    public static byte[] FromAudioClip(AudioClip clip, int sampleCount)
+    {
+        if (clip == null || sampleCount <= 0) return null;
+
+        int channels = clip.channels;
+        int frequency = clip.frequency;
+
+        float[] samples = new float[sampleCount * channels];
+        clip.GetData(samples, 0);
+
+        byte[] wav = ConvertAudioClipDataToInt16ByteArray(samples, sampleCount * channels);
+
+        using (MemoryStream stream = new MemoryStream())
+        using (BinaryWriter writer = new BinaryWriter(stream))
+        {
+            writer.Write(Encoding.ASCII.GetBytes("RIFF"));
+            writer.Write(36 + wav.Length);
+            writer.Write(Encoding.ASCII.GetBytes("WAVE"));
+            writer.Write(Encoding.ASCII.GetBytes("fmt "));
+            writer.Write(16);
+            writer.Write((ushort)1);
+            writer.Write((ushort)channels);
+            writer.Write(frequency);
+            writer.Write(frequency * channels * 2);
+            writer.Write((ushort)(channels * 2));
+            writer.Write((ushort)16);
+            writer.Write(Encoding.ASCII.GetBytes("data"));
+            writer.Write(wav.Length);
+            writer.Write(wav);
+
+            writer.Flush();
+            return stream.ToArray();
+        }
+    }
+
+    private static byte[] ConvertAudioClipDataToInt16ByteArray(float[] data, int length)
+    {
+        byte[] bytes = new byte[length * 2];
+        int rescaleFactor = 32767;
+
+        for (int i = 0; i < length; i++)
+        {
+            short value = (short)Mathf.Clamp(data[i] * rescaleFactor, short.MinValue, short.MaxValue);
+            byte[] byteArr = BitConverter.GetBytes(value);
+            byteArr.CopyTo(bytes, i * 2);
+        }
+
+        return bytes;
     }
 }
