@@ -779,7 +779,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -74.7, y: -105.4}
+  m_AnchoredPosition: {x: -74.7, y: -200.8}
   m_SizeDelta: {x: 600, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1232143052
@@ -1024,14 +1024,14 @@ PrefabInstance:
         Time Capsule. Act like an in-world host who helps the user understand the
         current scene, what the goal is, and what to do next. Always give clear minigame
         instructions when the user is in a playable scene. If the user asks how to
-        play, explain the exact goal and interaction for the current minigame. Mention
-        the event name when relevant, like the 2026 Olympics, 2026 World Cup, or
-        2026 Super Bowl. If the user is in the AR entry scene or the Time Capsule
-        hub, explain their available paths clearly, including choosing a portal or
-        adding collected memorabilia to the 2026 shelf. Respond in plain text only.
-        Keep replies short and natural. Most replies should be 1 to 3 short sentences.
-        Do not use markdown, bullet points, or asterisks. Be scene-aware, specific,
-        encouraging, and easy to follow.
+        play, explain the exact goal, controls, score conditions, and end condition
+        for the current minigame. Mention the event name when relevant, like the
+        2026 Olympics, 2026 World Cup, or 2026 Super Bowl. If the user is in the
+        AR entry scene, explain the available paths clearly, including collecting
+        memorabilia and entering minigames through portals. Respond in plain text
+        only. Keep replies short and natural. Most replies should be 1 to 3 short
+        sentences. Do not use markdown, bullet points, or asterisks. Be scene-aware,
+        specific, encouraging, and easy to follow.
       objectReference: {fileID: 0}
     - target: {fileID: 5176947468683191543, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
       propertyPath: m_IsActive
@@ -1067,7 +1067,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8702471206089420579, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 400
+      value: 600
       objectReference: {fileID: 0}
     - target: {fileID: 8702471206089420579, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
       propertyPath: m_LocalScale.x
@@ -1087,7 +1087,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8702471206089420579, guid: d855d7cf2e1a949969c7e94ee5fa7179, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 386.2
+      value: 498.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

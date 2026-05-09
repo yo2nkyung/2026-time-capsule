@@ -35,20 +35,22 @@ public class ARChatAssistant : MonoBehaviour
 
     [TextArea(4, 8)]
     public string assistantInstructions =
-    "You are a friendly conversational guide inside an AR project called Time Capsule. " +
-    "Act like an in-world host who helps the user understand the current scene, what the goal is, and what to do next. " +
-    "Always give clear minigame instructions when the user is in a playable scene. " +
-    "If the user asks how to play, explain the exact goal and interaction for the current minigame. " +
-    "Mention the event name when relevant, like the 2026 Olympics, 2026 World Cup, or 2026 Super Bowl. " +
-    "If the user is in the AR entry scene or the Time Capsule hub, explain their available paths clearly, including choosing a portal or adding collected memorabilia to the 2026 shelf. " +
-    "Respond in plain text only. Keep replies short and natural. " +
-    "Most replies should be 1 to 3 short sentences. " +
-    "Do not use markdown, bullet points, or asterisks. " +
-    "Be scene-aware, specific, encouraging, and easy to follow.";
+        "You are a friendly conversational guide inside an AR project called Time Capsule. " +
+        "Act like an in-world host who helps the user understand the current scene, what the goal is, and what to do next. " +
+        "Always give clear minigame instructions when the user is in a playable scene. " +
+        "If the user asks how to play, explain the exact goal, controls, score conditions, and end condition for the current minigame. " +
+        "Mention the event name when relevant, like the 2026 Olympics, 2026 World Cup, or 2026 Super Bowl. " +
+        "If the user is in the AR entry scene, explain the available paths clearly, including collecting memorabilia and entering minigames through portals. " +
+        "Respond in plain text only. Keep replies short and natural. " +
+        "Most replies should be 1 to 3 short sentences. " +
+        "Do not use markdown, bullet points, or asterisks. " +
+        "Be scene-aware, specific, encouraging, and easy to follow.";
+
     private const string ResponsesApiUrl = "https://api.openai.com/v1/responses";
     private const string TtsApiUrl = "https://api.openai.com/v1/audio/speech";
     private const string TranscriptionApiUrl = "https://api.openai.com/v1/audio/transcriptions";
 
+    // mic stuff
     private AudioClip recordedClip;
     private bool isRecording = false;
     private string micDevice = null;
@@ -74,7 +76,7 @@ public class ARChatAssistant : MonoBehaviour
 
         if (responseText != null)
         {
-            responseText.text = "Hi! Ask me what to do in this scene or minigame.";
+            responseText.text = "Ask me what to do in this scene or minigame.";
         }
 
         if (audioSource == null)
@@ -82,6 +84,7 @@ public class ARChatAssistant : MonoBehaviour
             audioSource = GetComponent<AudioSource>();
         }
 
+        // just use the first mic if there is one
         if (Microphone.devices.Length > 0)
         {
             micDevice = Microphone.devices[0];
@@ -106,7 +109,7 @@ public class ARChatAssistant : MonoBehaviour
 
         if (newState && responseText != null && string.IsNullOrWhiteSpace(responseText.text))
         {
-            responseText.text = "Hi! Ask me something about this scene.";
+            responseText.text = "Ask me what to do in this scene or minigame.";
         }
     }
 
@@ -249,6 +252,7 @@ public class ARChatAssistant : MonoBehaviour
                     : parsedText;
             }
 
+            // also read the reply out loud if tts is on
             if (useTextToSpeech && !string.IsNullOrEmpty(parsedText))
             {
                 yield return StartCoroutine(PlayTextToSpeech(parsedText));
@@ -315,6 +319,7 @@ public class ARChatAssistant : MonoBehaviour
                 inputField.text = "";
             }
 
+            // run the spoken input through the same flow as typed input
             yield return StartCoroutine(HandleUserMessage(transcriptResponse.text));
         }
     }
@@ -327,7 +332,8 @@ public class ARChatAssistant : MonoBehaviour
             "Scene description: " + sceneDescription + "\n" +
             "User message: " + userMessage + "\n\n" +
             "Respond as a helpful conversational avatar inside the AR experience. " +
-            "Use the scene description to explain the goal, controls, and next step. " +
+            "Use the scene description to explain the goal, controls, score conditions, end condition, and next step when relevant. " +
+            "If the user asks how to play, answer with the actual current scene gameplay flow. " +
             "Keep the answer concise, natural, and scene-aware.";
     }
 
@@ -336,19 +342,15 @@ public class ARChatAssistant : MonoBehaviour
         switch (sceneName)
         {
             case "ARScene":
-                return "This is the main AR entry scene for Time Capsule. The user places the Time Capsule hub into their real space and starts the experience here. From this scene, the user has two main paths: they can select a portal that leads into the Time Capsule hub to choose a minigame, or they can interact with the 2026 shelf and add memorabilia objects they collected throughout the experience. The assistant should clearly explain these two options and help the user understand what to do next.";
-
-            case "timecapsule_room":
-                return "This is the main Time Capsule hub where the user chooses which 2026 event to explore next. The user can look around the room and select one of the event portals or buttons to enter a minigame. The assistant should explain that this is the selection room and help the user choose between the 2026 Olympics, 2026 World Cup, and 2026 Super Bowl experiences.";
+                return "This is the main AR entry scene for Time Capsule. When the app opens, the user gets a camera permission prompt and sees HUD text telling them to point the camera at the 2026 Time Capsule QR code. When ARImageSpawner detects the image, the PortalHub spawns and the HUD text says the Time Capsule is ready to collect. The HUD then tells the user to flick, hold, and aim items into the capsule to collect memories. The assistant image pulses and the assistant chat panel can show a help prompt saying Need help? Tap me anytime. The user can interact with objects in the scene, collect items while TimeCapsuleController tracks progress, and then tap a portal to enter a minigame. Noteblocks act as obstacles the user can hit.";
 
             case "olympic":
-                return "This is the 2026 Olympics scene. It is a bobsleigh-style minigame where the user tilts their head to steer and stay on track. The assistant should explain that the goal is to follow the course, keep control, and use head movement to guide the ride.";
+                return "This is the 2026 Olympics bobsled minigame. The user presses the Game Start button, then after a 3 second countdown the track starts moving and the timer starts. The goal is to reach the finish line before time runs out. The user can restart with the Restart button and can leave the minigame at any time with the Leave button.";
 
             case "soccer":
-                return "This is the 2026 World Cup scene. The user can either act like a goalie and dodge or block incoming soccer balls, or interact with the ball and kick it toward the goal depending on the situation in the scene. The assistant should explain the current objective clearly and encourage the user to focus on the ball and react quickly.";
-
+                return "This is the 2026 World Cup soccer minigame. When the user enters, a menu lets them choose between two modes: Freekick Mode and Goalkeeper Mode. In Freekick Mode, the user stands at the middle of the court, can walk around the field, and when they contact the ball it is automatically kicked and flies away with sound. In Goalkeeper Mode, the user stands in front of the goal post and gets 5 chances to block balls that are thrown toward random points. Each successful block increases the save count, and when the game resets, the score also resets.";
             case "superbowl":
-                return "This is the 2026 Super Bowl scene. The goal is to throw the football toward the field target or goal area. The assistant should clearly explain that this is a football throwing minigame and tell the user to aim carefully and release the football toward the target.";
+                return "This is the 2026 Super Bowl football minigame. When the user presses the Start button, a 30 second timer begins. The user must pick up 5 footballs from the ground and throw them. If a ball reaches the touchdown zone or goes into the goalpost, the user scores points. The game ends when the user has thrown all 5 balls or when the 30 second timer runs out, and then the user's score is shown.";
 
             case "EndScene":
                 return "This is the ending scene of the Time Capsule experience. It shows that the user has finished exploring the 2026 events and completed the journey. The assistant should sound celebratory, explain that the experience is complete, and reflect on the events and memorabilia the user collected.";
