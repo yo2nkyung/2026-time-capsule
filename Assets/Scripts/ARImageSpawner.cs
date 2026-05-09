@@ -1,22 +1,18 @@
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+
 public class ARImageSpawner : MonoBehaviour
 {
     private const string ScanPrompt = "Point your camera at the QR code to place the hub.";
     private const string PlacedPrompt = "Select a Minigame Portal or fill your Time Capsule!";
-
     [SerializeField]
-    [Tooltip("The prefab to instantiate when the QR code image is first detected.")]
     private GameObject placementPrefab;
-
     [SerializeField]
-    [Tooltip("Optional rotation offset applied on top of the image's tracked pose (Euler degrees).")]
     private Vector3 rotationOffset = Vector3.zero;
-
     [SerializeField]
-    [Tooltip("The reset button GameObject in the HUD. Shown after placement, hidden again after reset.")]
     private GameObject resetButton;
+
 
     private ARTrackedImageManager imageManager;
     private GameObject spawnedInstance;
@@ -28,9 +24,12 @@ public class ARImageSpawner : MonoBehaviour
         if (imageManager == null)
             Debug.LogError("[ARImageSpawner] No ARTrackedImageManager found on this GameObject. Add it to XR Origin.");
     }
-    // ============================
+
     private void Start()
     {
+        if (HUDMessageController.Instance != null)
+            HUDMessageController.Instance.ResetRequested += Reset;
+
         // 이전에 허브 놓은 적 있으면 바로 스폰
         if (PlayerPrefs.GetInt("HubPlaced", 0) == 1)
         {
@@ -48,10 +47,15 @@ public class ARImageSpawner : MonoBehaviour
             spawnedInstance = Instantiate(placementPrefab, savedPos, savedRot);
             HUDMessageController.Instance?.ShowMessage(PlacedPrompt);
             imageManager.enabled = false;
-            resetButton?.SetActive(true);
+            HUDMessageController.Instance?.ShowResetButton(true);
         }
     }
-    // ============================
+
+    private void OnDestroy()
+    {
+        if (HUDMessageController.Instance != null)
+            HUDMessageController.Instance.ResetRequested -= Reset;
+    }
 
     private void OnEnable()
     {
@@ -70,6 +74,7 @@ public class ARImageSpawner : MonoBehaviour
         if (imageManager != null)
             imageManager.trackablesChanged.RemoveListener(OnTrackedImagesChanged);
     }
+
     private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> args)
     {
         foreach (ARTrackedImage trackedImage in args.added)
@@ -84,6 +89,7 @@ public class ARImageSpawner : MonoBehaviour
                 return;
         }
     }
+
     private bool TrySpawn(ARTrackedImage trackedImage)
     {
         if (trackedImage.trackingState == TrackingState.None)
@@ -109,18 +115,14 @@ public class ARImageSpawner : MonoBehaviour
         PlayerPrefs.Save();
         // ============================
 
-
         HUDMessageController.Instance?.ShowMessage(PlacedPrompt);
 
         // Disable tracking — no longer needed after placement.
         imageManager.enabled = false;
 
-        resetButton?.SetActive(true);
+        HUDMessageController.Instance?.ShowResetButton(true);
         return true;
     }
-
-
-
 
     public void Reset()
     {
@@ -136,7 +138,7 @@ public class ARImageSpawner : MonoBehaviour
         PlayerPrefs.Save();
         // ============================
 
-        resetButton?.SetActive(false);
+        HUDMessageController.Instance?.ShowResetButton(false);
         imageManager.enabled = true;
         HUDMessageController.Instance?.ShowMessage(ScanPrompt);
     }

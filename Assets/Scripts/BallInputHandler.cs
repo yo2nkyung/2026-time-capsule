@@ -90,6 +90,13 @@ public class BallInputHandler : MonoBehaviour
             capsule?.OnTapped();
             return;
         }
+        
+        MemoryObjectTap memoryTap = hit.collider.GetComponent<MemoryObjectTap>();
+        if (memoryTap != null && !MemoryObjectData.IsRestored(memoryTap.linkedMinigameScene))
+        {
+            memoryTap.OnTapped();
+            return;
+        }
 
         _activeFingerId = fingerId;
         _touchStartPos = screenPos;

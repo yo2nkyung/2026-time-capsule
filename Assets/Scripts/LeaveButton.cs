@@ -1,16 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 public class LeaveButton : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+    [SerializeField]
+    [Tooltip("The scene name of this minigame. Must match the linkedMinigameScene on the corresponding MemoryObjectTap.")]
+    private string _minigameScene;
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
@@ -19,7 +16,8 @@ public class LeaveButton : MonoBehaviour
             if (RectTransformUtility.RectangleContainsScreenPoint(rect, touch.position))
             {
                 Debug.Log("Leave button tapped, returning to main menu...");
-                SceneManager.LoadScene("ARScene"); // Load the main menu scene (index 0)
+                MemoryObjectData.MarkRestored(_minigameScene);
+                SceneManager.LoadScene("ARScene");
             }
         }
     }

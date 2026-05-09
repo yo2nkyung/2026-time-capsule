@@ -16,6 +16,7 @@ public class PortalEntrance : MonoBehaviour
             return;
 
         _transitioning = true;
+        HUDMessageController.Instance?.OnEnterMinigame();
         SceneManager.LoadScene(targetScene);
     }
 }

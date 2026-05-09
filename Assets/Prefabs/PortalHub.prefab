@@ -6461,6 +6461,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c19c4d581da21544d8650aa084ac1bd8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5543129228999002139}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c19c4d581da21544d8650aa084ac1bd8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2702635350018305922}
   m_SourcePrefab: {fileID: 100100000, guid: c19c4d581da21544d8650aa084ac1bd8, type: 3}
 --- !u!4 &550946081763224319 stripped
 Transform:
@@ -6540,6 +6543,19 @@ MonoBehaviour:
   trajectoryResolution: 30
   trajectoryTimeStep: 0.05
   fallThreshold: -5
+--- !u!114 &2702635350018305922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931834070056546373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d23a99422a54af6bf2d1b064256b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MemoryObjectTap
+  linkedMinigameScene: soccer
 --- !u!1001 &249566336378757322
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6855,6 +6871,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db2f4a5c0acbc43459e37d37a776413f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6044063091242675151}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db2f4a5c0acbc43459e37d37a776413f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5978100223693867291}
   m_SourcePrefab: {fileID: 100100000, guid: db2f4a5c0acbc43459e37d37a776413f, type: 3}
 --- !u!1 &1487404678391988313 stripped
 GameObject:
@@ -6929,6 +6948,19 @@ MonoBehaviour:
   trajectoryResolution: 30
   trajectoryTimeStep: 0.05
   fallThreshold: -5
+--- !u!114 &5978100223693867291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487404678391988313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d23a99422a54af6bf2d1b064256b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MemoryObjectTap
+  linkedMinigameScene: superbowl
 --- !u!4 &2301200872169757411 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: db2f4a5c0acbc43459e37d37a776413f, type: 3}
@@ -8435,6 +8467,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eaf91f38db66fc6439ff7704ed985e6c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4221278719183489686}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eaf91f38db66fc6439ff7704ed985e6c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4296105089108839759}
   m_SourcePrefab: {fileID: 100100000, guid: eaf91f38db66fc6439ff7704ed985e6c, type: 3}
 --- !u!1 &7220522328163158419 stripped
 GameObject:
@@ -8509,6 +8544,19 @@ MonoBehaviour:
   trajectoryResolution: 30
   trajectoryTimeStep: 0.05
   fallThreshold: -5
+--- !u!114 &4296105089108839759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7220522328163158419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d23a99422a54af6bf2d1b064256b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MemoryObjectTap
+  linkedMinigameScene: olympic
 --- !u!4 &8034318800771961641 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: eaf91f38db66fc6439ff7704ed985e6c, type: 3}

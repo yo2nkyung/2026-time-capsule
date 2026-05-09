@@ -1,20 +1,24 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-// Simple HUD manager for showing messages on screen.
+// Manages the persistent HUD canvas
 public class HUDMessageController : MonoBehaviour
 {
     public static HUDMessageController Instance { get; private set; }
-
-    [Tooltip("The Text component to write messages into.")]
     public Text hudText;
-
-    [Tooltip("The panel GameObject to show/hide (parent of hudText). If unassigned, falls back to hudText's own GameObject.")]
     public GameObject hudPanel;
+    public GameObject messageBackground;
+    public GameObject resetButton;
+    public event Action ResetRequested;
 
     private Coroutine _hideCoroutine;
     private const string WelcomeMessage = "Welcome, place the hub on the QR code";
+    private const string ArSceneName = "ARScene";
+    private const string MessageBackgroundName = "MessageBackground";
+    private const string ResetButtonName = "ResetButton";
 
     private void Awake()
     {
@@ -26,11 +30,73 @@ public class HUDMessageController : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        ResolveHudReferences();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Start()
     {
         ShowMessage(WelcomeMessage);
+    }
+
+    private void ResolveHudReferences()
+    {
+        if (messageBackground == null)
+            messageBackground = FindChildByName(transform, MessageBackgroundName);
+
+        if (resetButton == null)
+            resetButton = FindChildByName(transform, ResetButtonName);
+
+        if (resetButton != null)
+        {
+            Button btn = resetButton.GetComponent<Button>();
+            if (btn != null)
+            {
+                btn.onClick = new Button.ButtonClickedEvent();
+                btn.onClick.AddListener(() => ResetRequested?.Invoke());
+            }
+        }
+    }
+
+    private static GameObject FindChildByName(Transform parent, string childName)
+    {
+        Transform found = parent.Find(childName);
+        return found != null ? found.gameObject : null;
+    }
+
+    public void ShowResetButton(bool visible)
+    {
+        if (resetButton != null)
+            resetButton.SetActive(visible);
+    }
+
+    public void OnEnterMinigame()
+    {
+        if (messageBackground != null)
+            messageBackground.SetActive(false);
+
+        if (resetButton != null)
+            resetButton.SetActive(false);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        bool inArScene = scene.name == ArSceneName;
+
+        if (messageBackground != null)
+            messageBackground.SetActive(inArScene);
+
+        if (inArScene)
+            ShowMessage(WelcomeMessage);
     }
 
     // show a message until another message replaces it
@@ -52,7 +118,7 @@ public class HUDMessageController : MonoBehaviour
         _hideCoroutine = StartCoroutine(HideAfterDelay(duration));
     }
 
-    // hide the HUD immediately
+    //hides the HUD immediately
     public void Hide()
     {
         StopHideCoroutine();

@@ -244,6 +244,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a905bae3c99d473a8d1dbe11b385967, type: 3}
+--- !u!1 &370434532 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 931834070056546373, guid: 4a905bae3c99d473a8d1dbe11b385967, type: 3}
+  m_PrefabInstance: {fileID: 248730923}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &452482350
 GameObject:
   m_ObjectHideFlags: 0
@@ -477,6 +482,11 @@ Transform:
   - {fileID: 2130791963}
   m_Father: {fileID: 1776690638}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &729632480 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1487404678391988313, guid: 4a905bae3c99d473a8d1dbe11b385967, type: 3}
+  m_PrefabInstance: {fileID: 248730923}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1090333911 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3341239586783635607, guid: a3297c11c319c4128bfe2c3dbcd96b11, type: 3}
@@ -794,7 +804,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ARImageSpawner
   placementPrefab: {fileID: 4127532506768255517, guid: 4a905bae3c99d473a8d1dbe11b385967, type: 3}
   rotationOffset: {x: 0, y: 0, z: 0}
-  resetButton: {fileID: 452482350}
 --- !u!114 &1776690644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -813,6 +822,65 @@ MonoBehaviour:
   m_SerializedLibrary: {fileID: 11400000, guid: 026e51a8126fa442b8d2f4129bf25fef, type: 2}
   m_MaxNumberOfMovingImages: 10
   m_TrackedImagePrefab: {fileID: 0}
+--- !u!1 &1879740742 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7220522328163158419, guid: 4a905bae3c99d473a8d1dbe11b385967, type: 3}
+  m_PrefabInstance: {fileID: 248730923}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1959199855
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1959199857}
+  - component: {fileID: 1959199856}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1959199856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1959199855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3180dc7b471504b0b967be8e3375613b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ARSceneMemoryRestorer
+  memoryObjects:
+  - objectName: 2026 World Cup
+    linkedMinigameScene: soccer
+    memoryObject: {fileID: 370434532}
+  - objectName: 2026 Superbowl
+    linkedMinigameScene: superbowl
+    memoryObject: {fileID: 729632480}
+  - objectName: 2026 Winter Olympics
+    linkedMinigameScene: olympic
+    memoryObject: {fileID: 1879740742}
+--- !u!4 &1959199857
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1959199855}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2095262851
 GameObject:
   m_ObjectHideFlags: 0
@@ -1250,3 +1318,4 @@ SceneRoots:
   - {fileID: 4081445993827937252}
   - {fileID: 547309759}
   - {fileID: 248730923}
+  - {fileID: 1959199857}

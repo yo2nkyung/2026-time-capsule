@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "ar+avatar.slnx"
+    "dotnet.defaultSolution": "2026-time-capsule-main.slnx"
 }
